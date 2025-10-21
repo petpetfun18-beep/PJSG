@@ -1,0 +1,287 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin - Manage Shoes{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<style>
+  body {
+    background: url("{{ asset('images/brown.png') }}") center/cover no-repeat fixed;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* Sidebar Styles */
+  .sidebar {
+    width: 270px;
+    background-color: #764C29;
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  /* ✅ Logo Section */
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+
+  .sidebar-logo .logo-img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 20px;
+    padding: 5px;
+    /* background-color: #fff; */
+  }
+
+  .sidebar-logo h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+  }
+
+  .sidebar a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 10px;
+    transition: background 0.3s;
+  }
+
+  .sidebar a i {
+    margin-right: 10px;
+  }
+
+  .sidebar a:hover,
+  .sidebar a.active {
+    background-color: #5f3f22;
+  }
+
+  /* Logout Button */
+  .logout-btn {
+    margin-top: auto;
+    background-color: #895129;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    transition: background-color 0.3s;
+  }
+
+  .logout-btn:hover {
+    background-color: #a55d2f;
+  }
+
+  /* Main Content */
+  .main-content {
+    margin-left: 290px;
+    flex: 1;
+    padding: 40px 30px;
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(118, 76, 41, 0.2);
+  }
+
+  #shoesTable th,
+  #shoesTable td {
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  #shoesTable th:first-child,
+  #shoesTable td:first-child {
+    text-align: left;
+  }
+
+  table.dataTable tbody tr:hover {
+    background-color: #f3f3f3;
+  }
+
+  .action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    color: white;
+    transition: background 0.3s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .action-edit { background-color: #764C29; }
+  .action-edit:hover { background-color: #5f3f22; }
+  .action-delete { background-color: #895129; }
+  .action-delete:hover { background-color: #c0392b; }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+      flex-direction: row;
+      justify-content: space-around;
+      padding: 15px;
+    }
+
+    .sidebar-logo {
+      flex-direction: row;
+      justify-content: center;
+      margin-bottom: 0;
+    }
+
+    .sidebar-logo h1 {
+      display: none;
+    }
+
+    .main-content {
+      margin-left: 0;
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="sidebar">
+  <!-- ✅ Enlarged Logo Section -->
+  <div class="sidebar-logo">
+    <img src="{{ asset('images/logo white.png') }}" alt="Logo" class="logo-img">
+    <h1>Admin Panel</h1>
+  </div>
+
+  <a href="{{ path('app_admin_dashboard') }}" class="{% if app.request.get('_route') == 'app_admin_dashboard' %}active{% endif %}">
+    <i class="fas fa-list"></i> Manage Shoes
+  </a>
+  <a href="{{ path('app_admin_new') }}" class="{% if app.request.get('_route') == 'app_admin_new' %}active{% endif %}">
+    <i class="fas fa-plus-circle"></i> Add New Shoe
+  </a>
+  <a href="{{ path('app_admin_orders') }}" class="{% if app.request.get('_route') == 'app_admin_orders' %}active{% endif %}">
+    <i class="fas fa-boxes"></i> Manage Orders
+  </a>
+  <a href="{{ path('app_shop_index') }}">
+    <i class="fas fa-store"></i> View Shop
+  </a>
+
+  <!-- ✅ Secure Logout Form -->
+  <form action="{{ path('app_logout') }}" method="post" style="margin-top: auto;">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+    <button type="submit" class="logout-btn">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </form>
+</div>
+
+<div class="main-content">
+  <h1 class="text-3xl font-bold text-[#764C29] mb-6">Manage Shoes</h1>
+
+  <div class="overflow-x-auto rounded-xl bg-white shadow-xl p-6 sm:p-8 rounded-3xl">
+    <table id="shoesTable" class="display stripe hover w-full">
+      <thead class="bg-[#764C29] text-white">
+        <tr>
+          <th>Name</th>
+          <th>Brand</th>
+          <th>Category</th>
+          <th>Sizes</th>
+          <th>Colors</th>
+          <th>Price</th>
+          <th>Image</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for shoe in shoes %}
+          <tr>
+            <td class="font-medium text-gray-900">{{ shoe.name }}</td>
+            <td>{{ shoe.brand }}</td>
+            <td>{{ shoe.category ?: 'All' }}</td>
+            <td>{{ shoe.sizes is iterable and shoe.sizes|length > 0 ? shoe.sizes|join(', ') : 'N/A' }}</td>
+            <td>{{ shoe.colors is iterable and shoe.colors|length > 0 ? shoe.colors|join(', ') : 'N/A' }}</td>
+            <td class="font-semibold text-[#764C29]">₱{{ shoe.price|number_format(2) }}</td>
+            <td>
+              {% if shoe.image %}
+                <img src="{{ asset('uploads/images/' ~ shoe.image) }}" alt="{{ shoe.name }}" class="w-16 h-16 object-cover rounded-md border border-gray-200 shadow-sm">
+              {% else %}
+                <span class="text-gray-400 italic">No image</span>
+              {% endif %}
+            </td>
+            <td class="text-center align-middle">
+              <div class="flex gap-2 justify-center items-center">
+                <a href="{{ path('app_admin_edit', {'id': shoe.id}) }}" class="action-icon action-edit">
+                  <i class="fas fa-pencil-alt"></i>
+                </a>
+                <form method="post" action="{{ path('app_admin_delete', {'id': shoe.id}) }}" style="display:inline"
+                      onsubmit="return confirm('Are you sure you want to delete this shoe?');">
+                  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ shoe.id) }}">
+                  <button type="submit" class="action-icon action-delete">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="8" class="text-center text-gray-500 italic">No shoes found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#shoesTable').DataTable({
+      responsive: true,
+      pageLength: 10,
+      lengthMenu: [5, 10, 25, 50],
+      language: {
+        search: "Search:",
+        lengthMenu: "Show _MENU_ entries per page",
+        info: "Showing _START_ to _END_ of _TOTAL_ shoes",
+        zeroRecords: "No matching shoes found."
+      }
+    });
+  });
+</script>
+{% endblock %}

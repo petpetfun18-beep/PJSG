@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Shop - PIJAY Shoe Gallery{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    body {
+      background: url("{{ asset('images/white.png') }}") center/cover no-repeat fixed;
+      background-attachment: fixed;
+    }
+
+    section {
+      backdrop-filter: blur(3px);
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #e5e5e5;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(118, 76, 41, 0.2);
+    }
+
+    footer {
+      background-color: white;
+      color: #764C29;
+      padding: 15px 0;
+      text-align: center;
+      font-weight: 500;
+      margin-top: 60px;
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <div class="max-w-7xl mx-auto px-4">
+    <h1 class="text-5xl font-extrabold text-[#764C29] mb-6 text-center tracking-tight">
+      PIJAY Shoe Collection
+    </h1>
+
+    <!-- ✅ Category Filter (keeps 'All') -->
+    <div class="flex justify-center gap-4 mb-8 flex-wrap">
+      {% for category in categories %}
+        <a href="{{ path('app_shop_index', {'category': category.name}) }}"
+           class="px-4 py-2 rounded-full text-sm font-medium transition
+                  {% if selectedCategory == category.name or (selectedCategory == '' and category.name|lower == 'all') %}
+                     bg-[#764C29] text-white
+                  {% else %}
+                     bg-gray-200 text-[#764C29] hover:bg-[#E5D3C5]
+                  {% endif %}">
+          {{ category.name }}
+        </a>
+      {% endfor %}
+    </div>
+
+    {% if shoes is empty %}
+      <p class="text-center text-gray-500 text-lg italic">
+        No shoes available at the moment. Please check back soon!
+      </p>
+    {% else %}
+      <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {% for shoe in shoes %}
+          <div class="group bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-2xl transition-all duration-300 relative card">
+
+            <!-- Image Section -->
+            <div class="h-60 w-full bg-gray-100 overflow-hidden">
+              {% if shoe.image %}
+                <img 
+                  src="{{ asset('uploads/images/' ~ shoe.image) }}" 
+                  alt="{{ shoe.name }}" 
+                  class="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-500"
+                >
+              {% else %}
+                <div class="flex items-center justify-center h-full text-gray-400 text-sm">
+                  No image available
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Shoe Info -->
+            <div class="p-5 text-center">
+              <h2 class="text-xl font-semibold text-[#764C29] mb-1 truncate">{{ shoe.name }}</h2>
+              <p class="text-sm text-gray-600 mb-1">{{ shoe.brand }}</p>
+              <p class="text-sm text-gray-500 mb-2">
+                {{ shoe.category ?? 'All' }}
+              </p>
+
+              {% if shoe.sizes is defined and shoe.sizes|length > 0 %}
+                <div class="flex justify-center flex-wrap gap-1 mb-3">
+                  {% for size in shoe.sizes %}
+                    <span class="bg-[#F3E8E0] text-[#764C29] text-xs font-medium px-2 py-1 rounded-md shadow-sm">
+                      {{ size }}
+                    </span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              <div class="flex justify-center gap-2 mt-3">
+                <a href="{{ path('app_shop_show', {'id': shoe.id}) }}" class="bg-[#764C29] text-white px-3 py-1 rounded-full text-sm hover:bg-[#5f3f22] transition">
+                  View Details
+                </a>
+                <a href="{{ path('app_order_now', {'id': shoe.id}) }}" class="bg-[#A67B5B] text-white px-3 py-1 rounded-full text-sm hover:bg-[#8B5E3C] transition">
+                  Order Now
+                </a>
+              </div>
+            </div>
+
+            <!-- Floating badge -->
+            <div class="absolute top-3 right-3 bg-[#B77B52] text-white text-xs font-medium px-2 py-1 rounded-full shadow">
+              {{ shoe.brand }}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

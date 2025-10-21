@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin - Manage Orders{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+  body {
+    background: url("{{ asset('images/brown.png') }}") center/cover no-repeat fixed;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 250px;
+    background-color: #764C29;
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .sidebar h2 {
+    font-size: 1.6rem;
+    margin-bottom: 30px;
+    font-weight: bold;
+  }
+
+  .sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 10px;
+    transition: background 0.3s;
+  }
+
+  .sidebar a i {
+    margin-right: 10px;
+  }
+
+  .sidebar a:hover,
+  .sidebar a.active {
+    background-color: #5f3f22;
+  }
+
+  .sidebar .logout {
+    margin-top: auto;
+    background-color: #895129;
+    text-align: center;
+  }
+
+  .sidebar .logout:hover {
+    background-color: #a55d2f;
+  }
+
+  /* Main content */
+  .main-content {
+    margin-left: 270px;
+    flex: 1;
+    padding: 40px 30px;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+      flex-direction: row;
+      justify-content: space-around;
+      padding: 15px;
+    }
+
+    .sidebar h2 {
+      display: none;
+    }
+
+    .main-content {
+      margin-left: 0;
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="sidebar">
+  <h2>Admin Panel</h2>
+  <a href="{{ path('app_admin_index') }}" class="{% if app.request.get('_route') == 'app_admin_index' %}active{% endif %}">
+    <i class="fas fa-list"></i> Manage Shoes
+  </a>
+  <a href="{{ path('app_admin_new') }}" class="{% if app.request.get('_route') == 'app_admin_new' %}active{% endif %}">
+    <i class="fas fa-plus-circle"></i> Add New Shoe
+  </a>
+  <a href="{{ path('app_admin_orders') }}" class="{% if app.request.get('_route') == 'app_admin_orders' %}active{% endif %}">
+    <i class="fas fa-boxes"></i> Manage Orders
+  </a>
+  <a href="{{ path('app_shop_index') }}">
+    <i class="fas fa-store"></i> View Shop
+  </a>
+  <a href="{{ path('app_logout') }}" class="logout">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </a>
+</div>
+
+<div class="main-content">
+  <h1 class="text-3xl font-bold text-[#764C29] mb-6">Manage Orders</h1>
+
+  <div class="overflow-x-auto rounded-xl bg-white shadow-xl p-6 sm:p-8 rounded-3xl">
+    <table class="min-w-full divide-y divide-gray-300">
+      <thead class="bg-[#764C29] text-white">
+        <tr>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Customer</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Email</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Shoe</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Color</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Size</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Payment</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Total</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Status</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 bg-white">
+        {% for order in orders %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 font-medium text-gray-900">{{ order.customerName }}</td>
+            <td class="px-6 py-4">{{ order.customerEmail }}</td>
+            <td class="px-6 py-4">{{ order.shoe.name }}</td>
+            <td class="px-6 py-4">{{ order.selectedColor }}</td>
+            <td class="px-6 py-4">{{ order.selectedSize }}</td>
+            <td class="px-6 py-4">{{ order.paymentMethod }}</td>
+            <td class="px-6 py-4 font-semibold text-[#764C29]">₱{{ order.totalAmount|number_format(2) }}</td>
+            <td class="px-6 py-4">{{ order.status }}</td>
+            <td class="px-6 py-4 space-x-2">
+              <a href="{{ path('admin_order_view', {'id': order.id}) }}" 
+                 class="bg-[#764C29] text-white px-3 py-1 rounded hover:bg-[#5f3f22] transition">View</a>
+              <a href="{{ path('admin_order_update_status', {'id': order.id}) }}" 
+                 class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
+                 Update Status
+              </a>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="9" class="px-6 py-6 text-center text-gray-500 italic">
+              No orders found.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

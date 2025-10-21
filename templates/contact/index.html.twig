@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact - PIJAY Shoe Gallery{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+  body {
+    background: url("{{ asset('images/white.png') }}") center/cover no-repeat fixed;
+    background-attachment: fixed;
+  }
+
+  section {
+    backdrop-filter: blur(3px);
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e5e5e5;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(118, 76, 41, 0.2);
+  }
+
+  footer {
+    background-color: white;
+    color: #764C29;
+    padding: 15px 0;
+    text-align: center;
+    font-weight: 500;
+    margin-top: 60px;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<h1 class="text-3xl font-bold text-[#764C29] mt-12 text-center">Contact Us</h1>
+<p class="text-center mt-4">You can reach us at email@example.com</p>
+{% endblock %}

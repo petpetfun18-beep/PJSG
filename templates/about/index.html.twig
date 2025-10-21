@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}About - PIJAY Shoe Gallery{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+  body {
+    background: url("{{ asset('images/white.png') }}") center/cover no-repeat fixed;
+    background-attachment: fixed;
+  }
+
+  section {
+    backdrop-filter: blur(3px);
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e5e5e5;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(118, 76, 41, 0.2);
+  }
+
+  footer {
+    background-color: white;
+    color: #764C29;
+    padding: 15px 0;
+    text-align: center;
+    font-weight: 500;
+    margin-top: 60px;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<section class="max-w-5xl mx-auto mt-12 bg-white bg-opacity-90 p-10 rounded-2xl shadow-md">
+  <!-- Title -->
+  <h2 class="text-4xl font-bold text-[#764C29] mb-6 text-center">About PIJAY Shoe Gallery</h2>
+
+  <!-- Description -->
+  <p class="text-gray-700 text-lg leading-relaxed text-justify mb-6">
+    Welcome to <strong>PIJAY Shoe Gallery</strong> — where passion meets craftsmanship.
+    Our mission is to bring you a collection of high-quality, stylish, and comfortable shoes 
+    designed to elevate your fashion sense while ensuring comfort in every step.
+  </p>
+
+  <p class="text-gray-700 text-lg leading-relaxed text-justify mb-8">
+    Founded with the vision of combining modern design and traditional artistry, 
+    PIJAY Shoe Gallery offers a wide range of footwear for every occasion. 
+    Whether you’re looking for formal shoes, casual wear, or limited-edition collections,
+    we make sure each pair represents our commitment to excellence.
+  </p>
+
+  <!-- Vision & Mission Section -->
+  <div class="grid md:grid-cols-2 gap-8 mt-10">
+    <!-- Vision Card -->
+    <div class="card rounded-xl shadow-sm p-6">
+      <h3 class="text-2xl font-semibold text-[#764C29] mb-3 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-[#764C29]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2" />
+        </svg>
+        Vision
+      </h3>
+      <p class="text-gray-700 text-lg leading-relaxed">
+        To be the shoe store that people trust and love — where every pair 
+        inspires confidence, comfort, and style in everyday life.
+      </p>
+    </div>
+
+    <!-- Mission Card -->
+    <div class="card rounded-xl shadow-sm p-6">
+      <h3 class="text-2xl font-semibold text-[#764C29] mb-3 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-[#764C29]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2l4-4m5 2a9 9 0 11-18 0a9 9 0 0118 0z" />
+        </svg>
+        Mission
+      </h3>
+      <p class="text-gray-700 text-lg leading-relaxed">
+        Our mission is to provide shoes that people are proud to wear.  
+        We aim to bring together trendy designs, lasting quality, and fair prices, 
+        while giving customers a shopping experience that feels easy, enjoyable, 
+        and truly personal.
+      </p>
+    </div>
+  </div>
+
+  
+  </div>
+</section>
+
+{% endblock %}

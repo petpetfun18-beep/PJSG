@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ shoe.name }} Details{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gradient-to-b from-[#F2F2F2] to-white py-12 px-6 flex justify-center">
+  <div class="w-full max-w-4xl bg-white shadow-2xl rounded-3xl p-10 animate-fadeIn">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div>
+        {% if shoe.image %}
+          <img src="{{ asset('uploads/images/' ~ shoe.image) }}" 
+               alt="{{ shoe.name }}" 
+               class="rounded-2xl w-full h-96 object-cover shadow-lg border border-gray-100">
+        {% else %}
+          <div class="w-full h-96 flex items-center justify-center bg-gray-100 rounded-2xl text-gray-400 italic">
+            No Image Available
+          </div>
+        {% endif %}
+      </div>
+
+      <div>
+        <h1 class="text-4xl font-extrabold text-[#764C29] mb-4">{{ shoe.name }}</h1>
+        <p class="text-gray-600 mb-2"><strong>Brand:</strong> {{ shoe.brand }}</p>
+
+        <p class="text-gray-600 mb-2">
+          <strong>Available Colors:</strong>
+          {% if shoe.colors is iterable and shoe.colors|length > 0 %}
+            {{ shoe.colors|join(', ') }}
+          {% else %}
+            N/A
+          {% endif %}
+        </p>
+
+        <p class="text-gray-600 mb-2">
+          <strong>Available Sizes:</strong>
+          {% if shoe.sizes is iterable and shoe.sizes|length > 0 %}
+            {{ shoe.sizes|join(', ') }}
+          {% else %}
+            N/A
+          {% endif %}
+        </p>
+
+        <p class="text-gray-700 text-lg font-semibold mt-4 mb-2">₱{{ shoe.price|number_format(2) }}</p>
+        <p class="text-gray-600"><strong>Category:</strong> {{ shoe.category }}</p>
+        <p class="text-gray-600 mt-4 leading-relaxed">{{ shoe.description }}</p>
+
+        <div class="flex items-center gap-4 mt-8">
+          <a href="{{ path('app_shop_index') }}" class="bg-gray-300 text-[#764C29] px-5 py-2 rounded-full hover:bg-gray-400 transition">
+            ← Back to Shop
+          </a>
+          <a href="{{ path('app_order_now', {'id': shoe.id}) }}" class="bg-[#764C29] text-white px-6 py-2 rounded-full shadow-lg hover:bg-[#5f3f22] transform hover:-translate-y-1 transition-all duration-300">
+            Order Now
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn { animation: fadeIn 0.8s ease-out; }
+</style>
+{% endblock %}

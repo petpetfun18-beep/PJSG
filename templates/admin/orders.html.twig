@@ -1,0 +1,298 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin - Customer Orders{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+  body {
+    background: url("{{ asset('images/white.png') }}") center/cover no-repeat fixed;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 270px;
+    background-color: #764C29;
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  /* Logo Section */
+  .sidebar-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+
+  .sidebar-logo .logo-img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 20px;
+    padding: 5px;
+  }
+
+  .sidebar-logo h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+  }
+
+  /* Sidebar Links */
+  .sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 10px;
+    transition: background 0.3s;
+  }
+
+  .sidebar a i {
+    margin-right: 10px;
+  }
+
+  .sidebar a:hover,
+  .sidebar a.active {
+    background-color: #5f3f22;
+  }
+
+  /* Logout Button */
+  .sidebar .logout-btn {
+    margin-top: auto;
+    background-color: #895129;
+    text-align: center;
+    color: white;
+    border: none;
+    padding: 10px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    width: 100%;
+  }
+
+  .sidebar .logout-btn:hover {
+    background-color: #a55d2f;
+  }
+
+  /* Main content */
+  .main-content {
+    margin-left: 290px;
+    flex: 1;
+    padding: 40px 30px;
+  }
+
+  /* Table styling */
+  #ordersTable th:nth-child(n+2),
+  #ordersTable td:nth-child(n+2) {
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  #ordersTable th:first-child,
+  #ordersTable td:first-child {
+    text-align: left;
+  }
+
+  .input-field {
+    border: 2px solid #E0E0E0;
+    border-radius: 12px;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+  }
+  .input-field:focus {
+    border-color: #764C29;
+    box-shadow: 0 4px 12px rgba(118, 76, 41, 0.25);
+    outline: none;
+  }
+
+  table.dataTable tbody tr:hover {
+    background-color: #f3f3f3;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+      flex-direction: row;
+      justify-content: space-around;
+      padding: 15px;
+    }
+
+    .sidebar-logo {
+      flex-direction: row;
+      justify-content: center;
+      margin-bottom: 0;
+    }
+
+    .sidebar-logo h1 {
+      display: none;
+    }
+
+    .main-content {
+      margin-left: 0;
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="sidebar">
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <img src="{{ asset('images/logo white.png') }}" alt="Logo" class="logo-img">
+    <h1>Admin Panel</h1>
+  </div>
+
+  <a href="{{ path('app_admin_index') }}" class="{% if app.request.get('_route') == 'app_admin_index' %}active{% endif %}">
+    <i class="fas fa-list"></i> Manage Shoes
+  </a>
+  <a href="{{ path('app_admin_new') }}" class="{% if app.request.get('_route') == 'app_admin_new' %}active{% endif %}">
+    <i class="fas fa-plus-circle"></i> Add New Shoe
+  </a>
+  <a href="{{ path('app_admin_orders') }}" class="{% if app.request.get('_route') == 'app_admin_orders' %}active{% endif %}">
+    <i class="fas fa-boxes"></i> Manage Orders
+  </a>
+  <a href="{{ path('app_shop_index') }}">
+    <i class="fas fa-store"></i> View Shop
+  </a>
+
+  <!-- Logout -->
+  <form action="{{ path('app_logout') }}" method="post" style="margin-top: auto;">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+    <button type="submit" class="logout-btn">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </form>
+</div>
+
+<div class="main-content">
+  <h1 class="text-3xl font-bold text-[#764C29] mb-6">Customer Orders</h1>
+
+  <!-- Summary Boxes -->
+  <div class="flex gap-6 mb-6 flex-wrap">
+    <div class="bg-white shadow rounded p-4 text-center flex-1 min-w-[150px]">
+      <h3 class="text-gray-500">Total Orders</h3>
+      <p class="text-2xl font-bold text-[#764C29]">{{ totalOrders }}</p>
+    </div>
+    <div class="bg-white shadow rounded p-4 text-center flex-1 min-w-[150px]">
+      <h3 class="text-gray-500">Pending</h3>
+      <p class="text-2xl font-bold text-yellow-500">{{ pendingOrders }}</p>
+    </div>
+    <div class="bg-white shadow rounded p-4 text-center flex-1 min-w-[150px]">
+      <h3 class="text-gray-500">Completed</h3>
+      <p class="text-2xl font-bold text-green-500">{{ completedOrders }}</p>
+    </div>
+    <div class="bg-white shadow rounded p-4 text-center flex-1 min-w-[150px]">
+      <h3 class="text-gray-500">Cancelled</h3>
+      <p class="text-2xl font-bold text-red-500">{{ cancelledOrders }}</p>
+    </div>
+  </div>
+
+  <!-- Filter Orders -->
+  <form method="GET" class="mb-4 flex gap-2 flex-wrap">
+    <select name="status" class="input-field w-48">
+      <option value="">All Statuses</option>
+      <option value="Pending" {% if app.request.get('status') == 'Pending' %}selected{% endif %}>Pending</option>
+      <option value="Completed" {% if app.request.get('status') == 'Completed' %}selected{% endif %}>Completed</option>
+      <option value="Cancelled" {% if app.request.get('status') == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+    </select>
+    <button type="submit" class="px-4 py-2 bg-[#764C29] text-white rounded hover:bg-[#5f3f22]">Filter</button>
+  </form>
+
+  <!-- Orders Table -->
+  <div class="overflow-x-auto rounded-xl">
+    <table id="ordersTable" class="display stripe hover w-full">
+      <thead class="bg-[#764C29] text-white">
+        <tr>
+          <th>Customer</th>
+          <th>Phone</th>
+          <th>Shoe</th>
+          <th>Color</th>
+          <th>Size</th>
+          <th>Payment</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+          <tr>
+            <td>{{ order.customerName }}</td>
+            <td>{{ order.customerPhone }}</td>
+            <td>{{ order.shoe.name }}</td>
+            <td>{{ order.selectedColor }}</td>
+            <td>{{ order.selectedSize }}</td>
+            <td>{{ order.paymentMethod }}</td>
+            <td>
+              {% if order.status == 'Pending' %}
+                <span class="px-2 py-1 bg-yellow-200 text-yellow-800 rounded-full text-sm font-semibold">{{ order.status }}</span>
+              {% elseif order.status == 'Completed' %}
+                <span class="px-2 py-1 bg-green-200 text-green-800 rounded-full text-sm font-semibold">{{ order.status }}</span>
+              {% elseif order.status == 'Cancelled' %}
+                <span class="px-2 py-1 bg-red-200 text-red-800 rounded-full text-sm font-semibold">{{ order.status }}</span>
+              {% endif %}
+            </td>
+            <td>{{ order.orderDate ? order.orderDate|date('Y-m-d H:i') : '' }}</td>
+            <td class="flex gap-1 flex-wrap justify-center">
+              {% for statusOption in ['Pending','Completed','Cancelled'] %}
+                {% if order.status != statusOption %}
+                  <form method="POST" action="{{ path('app_admin_orders_update', {'id': order.id, 'status': statusOption}) }}">
+                    <button type="submit" onclick="return confirm('Are you sure you want to mark this order as {{ statusOption }}?');"
+                            class="px-2 py-1 rounded text-white
+                              {% if statusOption == 'Pending' %}bg-yellow-500 hover:bg-yellow-600{% endif %}
+                              {% if statusOption == 'Completed' %}bg-green-500 hover:bg-green-600{% endif %}
+                              {% if statusOption == 'Cancelled' %}bg-red-500 hover:bg-red-600{% endif %} text-xs">
+                      {{ statusOption }}
+                    </button>
+                  </form>
+                {% endif %}
+              {% endfor %}
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="9" class="text-center text-gray-500 italic">No orders yet.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#ordersTable').DataTable({
+      responsive: true,
+      pageLength: 10,
+      lengthMenu: [5, 10, 25, 50],
+    });
+  });
+</script>
+{% endblock %}

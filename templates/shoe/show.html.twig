@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ shoe.name }} Details{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-[#F2F2F2] py-12 px-6 flex justify-center">
+  <div class="w-full max-w-3xl bg-white shadow-2xl rounded-3xl p-8 animate-fadeIn">
+    <h1 class="text-3xl font-bold text-[#764C29] mb-4 text-center">{{ shoe.name }}</h1>
+    <img src="{{ asset('uploads/' ~ shoe.image) }}" alt="{{ shoe.name }}" class="w-full h-96 object-cover rounded-xl mb-6 shadow-md">
+
+    <div class="space-y-2 text-gray-700">
+      <p><strong>Brand:</strong> {{ shoe.brand }}</p>
+      <p><strong>Color:</strong> {{ shoe.color }}</p>
+      <p><strong>Available Sizes:</strong> {{ shoe.sizes }}</p>
+      <p><strong>Price:</strong> ₱{{ shoe.price }}</p>
+      <p><strong>Category:</strong> {{ shoe.category }}</p>
+      <p><strong>Description:</strong> {{ shoe.description }}</p>
+    </div>
+
+    <div class="text-center mt-8">
+      <a href="{{ path('app_order_now', {'id': shoe.id}) }}" class="bg-[#764C29] text-white px-6 py-3 rounded-full hover:bg-[#5f3f22] transition">
+        Order Now
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn { animation: fadeIn 0.8s ease-out; }
+</style>
+{% endblock %}

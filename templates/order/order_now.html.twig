@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Order Shoe - {{ shoe.name }}{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gradient-to-b from-[#F2F2F2] to-white py-12 px-6 flex justify-center">
+  <div class="w-full max-w-3xl bg-white shadow-2xl rounded-3xl p-8 animate-fadeIn">
+
+    <h1 class="text-3xl font-extrabold text-[#764C29] mb-8 text-center">
+      Order: {{ shoe.name }}
+    </h1>
+
+    <div class="flex flex-col md:flex-row gap-8 mb-8">
+      {% if shoe.image %}
+        <img src="{{ asset('uploads/images/' ~ shoe.image) }}" 
+             alt="{{ shoe.name }}" 
+             class="w-full md:w-1/2 h-72 object-cover rounded-2xl shadow-md mx-auto">
+      {% else %}
+        <div class="w-full md:w-1/2 h-72 flex items-center justify-center bg-gray-100 rounded-2xl text-gray-400 italic">
+          No Image Available
+        </div>
+      {% endif %}
+
+      <div class="flex-1 space-y-2">
+        <h2 class="text-xl font-semibold text-[#764C29]">{{ shoe.brand }}</h2>
+        <p class="text-gray-600">₱{{ shoe.price|number_format(2) }}</p>
+        <p class="text-gray-700 text-sm leading-relaxed">{{ shoe.description }}</p>
+      </div>
+    </div>
+
+    <form method="POST" action="{{ path('app_order_submit', {'id': shoe.id}) }}" class="space-y-4">
+
+      <input type="text" name="customer_name" placeholder="Full Name" required class="input-field">
+      
+    
+      <input type="tel" name="customer_phone" placeholder="Phone Number (09XXXXXXXXX)" 
+             pattern="09\d{9}" maxlength="11" required class="input-field">
+      
+      <textarea name="customer_address" placeholder="Complete Address" required class="input-field"></textarea>
+
+      <label class="block font-semibold text-gray-700 mt-2">Select Color</label>
+      <select name="color" class="input-field" required>
+        <option value="">Choose color</option>
+        {% for color in shoe.colors %}
+          <option value="{{ color }}">{{ color }}</option>
+        {% endfor %}
+      </select>
+
+      <label class="block font-semibold text-gray-700 mt-2">Select Size</label>
+      <select name="size" class="input-field" required>
+        <option value="">Choose size</option>
+        {% for size in shoe.sizes %}
+          <option value="{{ size }}">{{ size }}</option>
+        {% endfor %}
+      </select>
+
+      <label class="block font-semibold text-gray-700 mt-2">Payment Method</label>
+      <select name="payment_method" class="input-field" required>
+        <option value="">Select Payment Method</option>
+        <option value="Cash on Delivery">Cash on Delivery</option>
+        <option value="E-Wallet">E-Wallet</option>
+      </select>
+
+      <button type="submit" class="bg-[#764C29] text-white px-6 py-3 rounded-full hover:bg-[#5f3f22] transition">
+        Confirm Order
+      </button>
+    </form>
+  </div>
+</div>
+
+<style>
+.input-field {
+  border: 2px solid #E0E0E0;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+.input-field:focus {
+  border-color: #764C29;
+  box-shadow: 0 4px 12px rgba(118, 76, 41, 0.25);
+  outline: none;
+}
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn { animation: fadeIn 0.8s ease-out; }
+</style>
+{% endblock %}

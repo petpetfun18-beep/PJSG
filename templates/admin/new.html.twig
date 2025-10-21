@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add New Shoe{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+  body {
+    background: url("{{ asset('images/brown.png') }}") center/cover no-repeat fixed;
+    background-attachment: fixed;
+  }
+
+  section {
+    backdrop-filter: blur(3px);
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e5e5e5;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(118, 76, 41, 0.2);
+  }
+
+  footer {
+    background-color: white;
+    color: #764C29;
+    padding: 15px 0;
+    text-align: center;
+    font-weight: 500;
+    margin-top: 60px;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="min-h-screen py-12 px-6 flex justify-center">
+  <div class="w-full max-w-4xl bg-white shadow-2xl rounded-3xl p-10 animate-fadeIn">
+    
+    <!-- ✅ Title and Back Button -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-extrabold text-[#764C29]">Add New Shoe</h1>
+
+      <a href="{{ path('app_admin_dashboard') }}" 
+         class="bg-gray-200 text-[#764C29] px-5 py-2 rounded-full shadow hover:bg-gray-300 hover:shadow-md transition duration-300 flex items-center space-x-2">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Back</span>
+      </a>
+    </div>
+
+    <!-- ✅ Form -->
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'class': 'space-y-6'}}) }}
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {{ form_row(form.name, {'attr': {'placeholder': 'Enter shoe name', 'class': 'input-field'}}) }}
+        {{ form_row(form.brand, {'attr': {'placeholder': 'Brand name', 'class': 'input-field'}}) }}
+        {{ form_row(form.colors, {'attr': {'placeholder': 'Red, Blue, Black', 'class': 'input-field'}}) }}
+        {{ form_row(form.sizes, {'attr': {'placeholder': '6,7,8,9', 'class': 'input-field'}}) }}
+        {{ form_row(form.price, {'attr': {'placeholder': 'Price in ₱', 'class': 'input-field'}}) }}
+        {{ form_row(form.category, {'attr': {'class': 'input-field'}}) }}
+      </div>
+
+      <div class="mt-4">
+        {{ form_row(form.image, {'attr': {'class': 'file-input'}}) }}
+      </div>
+
+      <div class="mt-4">
+        {{ form_row(form.description, {'attr': {'placeholder': 'Add a description...', 'class': 'input-field'}}) }}
+      </div>
+
+      <div class="mt-6 text-center">
+        <button type="submit" class="bg-[#764C29] text-white px-8 py-3 rounded-full shadow-lg hover:bg-[#5f3f22] transform hover:-translate-y-1 transition-all duration-300">
+          Add Shoe
+        </button>
+      </div>
+
+    {{ form_end(form) }}
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<style>
+  .input-field {
+    border: 2px solid #E0E0E0;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+  .input-field:focus {
+    border-color: #764C29;
+    box-shadow: 0 4px 12px rgba(118, 76, 41, 0.25);
+    outline: none;
+  }
+
+  .file-input {
+    border: 2px dashed #E0E0E0;
+    border-radius: 12px;
+    padding: 1rem;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .file-input:hover {
+    border-color: #764C29;
+    background-color: #FDF6F2;
+  }
+
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn { animation: fadeIn 0.8s ease-out; }
+</style>
+
+<!-- FontAwesome for Back Icon -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+{% endblock %}

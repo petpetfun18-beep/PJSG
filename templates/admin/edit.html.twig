@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Shoe - {{ shoe.name }}{% endblock %}
+
+{% block body %}
+<div class="min-h-screen py-12 px-6 flex justify-center">
+  <div class="w-full max-w-4xl bg-white shadow-2xl rounded-3xl p-10 animate-fadeIn">
+
+    <!-- ✅ Title and Back Button -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-extrabold text-[#764C29]">
+        Edit Shoe: {{ shoe.name }}
+      </h1>
+
+      <a href="{{ path('app_admin_dashboard') }}" 
+         class="bg-gray-200 text-[#764C29] px-5 py-2 rounded-full shadow hover:bg-gray-300 hover:shadow-md transition duration-300 flex items-center space-x-2">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Back</span>
+      </a>
+    </div>
+
+    <!-- ✅ Edit Shoe Form -->
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'class': 'space-y-6'}}) }}
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {{ form_row(form.name, {'attr': {'class': 'input-field'}}) }}
+        {{ form_row(form.brand, {'attr': {'class': 'input-field'}}) }}
+        {{ form_row(form.colors, {'attr': {'class': 'input-field', 'placeholder': 'Red, Blue, Black'}}) }}
+        {{ form_row(form.sizes, {'attr': {'class': 'input-field', 'placeholder': '6,7,8,9'}}) }}
+        {{ form_row(form.price, {'attr': {'class': 'input-field'}}) }}
+        {{ form_row(form.category, {'attr': {'class': 'input-field'}}) }}
+      </div>
+
+      <div class="mt-4">
+        {% if shoe.image %}
+          <p class="mb-2 font-semibold text-[#764C29]">Current Image:</p>
+          <img src="{{ asset('uploads/images/' ~ shoe.image) }}" 
+               alt="{{ shoe.name }}" 
+               class="w-64 h-64 object-cover rounded-xl shadow-md mb-4">
+        {% endif %}
+        {{ form_row(form.image, {'attr': {'class': 'file-input'}}) }}
+      </div>
+
+      <div class="mt-4">
+        {{ form_row(form.description, {'attr': {'class': 'input-field', 'placeholder': 'Add a description...'}}) }}
+      </div>
+
+      <div class="mt-6 text-center">
+        <button type="submit" class="bg-[#764C29] text-white px-8 py-3 rounded-full shadow-lg hover:bg-[#5f3f22] transform hover:-translate-y-1 transition-all duration-300">
+          Update Shoe
+        </button>
+      </div>
+
+    {{ form_end(form) }}
+
+  </div>
+</div>
+
+<!-- ✅ Styling and Animations -->
+<style>
+body {
+    background: url("{{ asset('images/brown.png') }}") center/cover no-repeat fixed;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+  }
+.input-field {
+  border: 2px solid #E0E0E0;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+.input-field:focus {
+  border-color: #764C29;
+  box-shadow: 0 4px 12px rgba(118, 76, 41, 0.25);
+  outline: none;
+}
+.file-input {
+  border: 2px dashed #E0E0E0;
+  border-radius: 12px;
+  padding: 1rem;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.file-input:hover {
+  border-color: #764C29;
+  background-color: #FDF6F2;
+}
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn { animation: fadeIn 0.8s ease-out; }
+</style>
+
+<!-- ✅ FontAwesome for Back Icon -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+{% endblock %}

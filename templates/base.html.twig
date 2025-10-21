@@ -1,22 +1,142 @@
-{# templates/base.html.twig #}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}PJAY Shoe Gallery{% endblock %}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}PIJAY Shoe Gallery{% endblock %}</title>
 
-    <!-- TailwindCSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- ✅ Website Icon -->
+  <link rel="icon" type="image/png" href="{{ asset('images/logo white.png') }}">
 
-    <!-- Inter font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Custom stylesheets block -->
-    {% block stylesheets %}
-    {% endblock %}
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  {% block stylesheets %}
+  <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+  {% endblock %}
+
+  <style>
+    /* ✨ Custom navbar hover animation */
+    .nav-link {
+      position: relative;
+      display: inline-block;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -4px;
+      transform: translateX(-50%) scaleX(0);
+      transform-origin: center;
+      width: 60%;
+      height: 2px;
+      background-color: #F2F2F2;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .nav-link:hover {
+      color: #F2F2F2;
+    }
+
+    .nav-link:hover::after {
+      transform: translateX(-50%) scaleX(1);
+      opacity: 1;
+    }
+
+    .manage-btn {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .manage-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(118, 76, 41, 0.15);
+      transition: left 0.4s ease;
+    }
+
+    .manage-btn:hover::before {
+      left: 0;
+    }
+
+    .manage-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    header {
+      animation: fadeDown 0.7s ease-out;
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
-<body class="bg-brand-light font-sans">
+
+<body class="bg-[#F2F2F2] font-sans flex flex-col min-h-screen">
+
+  <!-- ✅ Hide Header if on Admin Page -->
+  {% if not (app.request.get('_route') starts with 'app_admin') %}
+  <header class="flex justify-between items-center bg-[#764C29] text-white px-10 py-2 shadow-md">
+    <div class="flex items-center space-x-3">
+      <a href="{{ path('app_dashboard') }}">
+        <img src="{{ asset('images/logo white.png') }}" 
+             alt="PIJAY Logo" 
+             class="w-12 h-12 object-cover hover:scale-110 transition-transform duration-300">
+      </a>
+      <h1 class="text-xl font-bold tracking-wide hover:tracking-widest transition-all duration-300">
+        <a href="{{ path('app_dashboard') }}">PIJAY Shoe Gallery</a>
+      </h1>
+    </div>
+
+    <nav class="flex space-x-6 text-base font-medium items-center">
+      <a href="{{ path('app_dashboard') }}" class="nav-link">Home</a>
+      <a href="{{ path('app_shop_index') }}" class="nav-link">Shop</a>
+      <a href="{{ path('app_about') }}" class="nav-link">About</a>
+      <a href="{{ path('app_contact') }}" class="nav-link">Contact</a>
+
+      <a href="{{ path('app_admin_dashboard') }}" 
+         class="manage-btn bg-white text-[#764C29] px-3 py-1 rounded-md font-semibold hover:bg-[#F2F2F2] transition relative">
+        Manage
+      </a>
+    </nav>
+  </header>
+  {% endif %}
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow">
     {% block body %}{% endblock %}
+  </main>
+
+  <!-- ✅ Hide Footer if on Admin Page -->
+  {% if not (app.request.get('_route') starts with 'app_admin') %}
+  <footer class="bg-[#764C29] text-white text-center py-4 mt-10 shadow-inner">
+    <p class="text-sm">
+      © 2025 <strong>PIJAY Shoe Gallery</strong>. All Rights Reserved.
+    </p>
+  </footer>
+  {% endif %}
+
+  {% block javascripts %}
+  {% endblock %}
 </body>
 </html>

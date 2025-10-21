@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gradient-to-b from-[#f8f5f2] to-white py-12 px-6">
+  <div class="max-w-4xl mx-auto bg-white shadow-2xl rounded-3xl p-10 animate-fadeIn">
+    <h1 class="text-3xl font-extrabold text-[#764C29] mb-8 text-center">🧾 Checkout</h1>
+
+    <form method="POST" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-[#764C29] font-semibold mb-2">Full Name</label>
+          <input type="text" name="name" required class="input-field" placeholder="Enter your full name">
+        </div>
+
+        <div>
+          <label class="block text-[#764C29] font-semibold mb-2">Email</label>
+          <input type="email" name="email" required class="input-field" placeholder="you@example.com">
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-[#764C29] font-semibold mb-2">Delivery Address</label>
+          <textarea name="address" rows="3" required class="input-field" placeholder="Complete shipping address"></textarea>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-[#764C29] font-semibold mb-2">Payment Method</label>
+          <select name="payment" class="input-field" required>
+            <option value="">-- Select Payment Option --</option>
+            <option value="Cash on Delivery">💵 Cash on Delivery</option>
+            <option value="E-Wallet">📱 E-Wallet (GCash, Maya, etc.)</option>
+          </select>
+        </div>
+      </div>
+
+      <h2 class="text-2xl font-bold text-[#764C29] mt-10 mb-4">Order Summary</h2>
+
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="bg-[#FDF6F2] text-[#764C29]">
+            <th class="py-2">Item</th>
+            <th class="py-2">Qty</th>
+            <th class="py-2">Price</th>
+            <th class="py-2">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set total = 0 %}
+          {% for item in cart %}
+            {% set subtotal = item.price * item.quantity %}
+            {% set total = total + subtotal %}
+            <tr class="text-center border-b">
+              <td>{{ item.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>₱{{ item.price }}</td>
+              <td>₱{{ subtotal }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="flex justify-between mt-6 text-xl font-bold text-[#764C29]">
+        <span>Total:</span>
+        <span>₱{{ total }}</span>
+      </div>
+
+      <div class="mt-10 text-center">
+        <button type="submit" class="bg-[#764C29] text-white px-8 py-3 rounded-full shadow-lg hover:bg-[#5f3f22] transform hover:-translate-y-1 transition-all duration-300">
+          Place Order
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% block javascripts %}
+<style>
+  .input-field {
+    border: 2px solid #E0E0E0;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+  .input-field:focus {
+    border-color: #764C29;
+    box-shadow: 0 4px 12px rgba(118, 76, 41, 0.25);
+    outline: none;
+  }
+
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn { animation: fadeIn 0.8s ease-out; }
+</style>
+{% endblock %}
+{% endblock %}
