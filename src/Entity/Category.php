@@ -23,9 +23,16 @@ class Category
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Shoe::class)]
     private Collection $shoes;
 
+    /**
+     * @var Collection<int, shoe>
+     */
+    #[ORM\ManyToMany(targetEntity: shoe::class, inversedBy: 'categories')]
+    private Collection $shoe;
+
     public function __construct()
     {
         $this->shoes = new ArrayCollection();
+        $this->shoe = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -64,5 +71,29 @@ class Category
     public function __toString(): string
     {
         return $this->name ?? '';
+    }
+
+    /**
+     * @return Collection<int, shoe>
+     */
+    public function getShoe(): Collection
+    {
+        return $this->shoe;
+    }
+
+    public function addShoe(shoe $shoe): static
+    {
+        if (!$this->shoe->contains($shoe)) {
+            $this->shoe->add($shoe);
+        }
+
+        return $this;
+    }
+
+    public function removeShoe(shoe $shoe): static
+    {
+        $this->shoe->removeElement($shoe);
+
+        return $this;
     }
 }

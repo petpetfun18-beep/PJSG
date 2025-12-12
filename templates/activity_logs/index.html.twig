@@ -1,0 +1,198 @@
+{% extends 'base.html.twig' %}
+{% block navbar %}{% endblock %}
+
+{% block title %}Activity Logs | PIJAY Shoe Gallery{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    background: #f4f2ef;
+}
+
+.sidebar {
+    width: 260px;
+    background-color: #764C29;
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+    box-shadow: 2px 0 15px rgba(0,0,0,0.15);
+}
+.sidebar-logo {
+    display: block;
+    margin: 0 auto 20px;
+    width: 120px;
+    border-radius: 8px;
+}
+.sidebar h2 {
+    font-size: 1.7rem;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 600;
+}
+.sidebar a {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    margin-bottom: 14px;
+    padding: 12px 15px;
+    border-radius: 10px;
+    transition: all 0.25s ease;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+.sidebar a i {
+    margin-right: 12px;
+    font-size: 1.1rem;
+}
+.sidebar a:hover, .sidebar a.active {
+    background-color: #5f3f22;
+    transform: translateX(4px);
+}
+.logout-btn {
+    margin-top: auto;
+    background-color: #8a5630;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    text-align: center;
+    transition: background 0.25s ease;
+}
+.logout-btn:hover {
+    background-color: #9d6338;
+}
+
+.main-content {
+    margin-left: 280px;
+    flex: 1;
+    padding: 50px 40px;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(6px);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+h1 {
+    color: #764C29;
+    margin-bottom: 35px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+table.dataTable {
+    width: 100% !important;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.98);
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    overflow: hidden;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+    font-size: 0.95rem;
+}
+th {
+    background-color: #764C29;
+    color: white;
+}
+td {
+    border-bottom: 1px solid #eee;
+}
+table.dataTable tr:last-child td {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 15px;
+    }
+    .sidebar h2 { display: none; }
+    .main-content { margin-left: 0; padding: 20px; }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="sidebar">
+     <img src="{{ asset('images/logo white.png') }}" alt="Logo" class="logo-img">
+    <h2>Admin Panel</h2>
+    <a href="{{ path('app_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="{{ path('app_user_index') }}"><i class="fas fa-users"></i> Manage Users</a>
+    <a href="{{ path('app_activity_logs') }}" class="active"><i class="fas fa-clipboard-list"></i> Activity Logs</a>
+    <a href="{{ path('app_admin_dashboard') }}"><i class="fas fa-shoe-prints"></i> Manage Shoes</a>
+    <a href="{{ path('app_admin_orders') }}"><i class="fas fa-boxes"></i> Manage Orders</a>
+
+    <form action="{{ path('app_logout') }}" method="post" style="margin-top:auto;">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </form>
+</div>
+
+<div class="main-content">
+
+    <h1>Activity Logs</h1>
+    <div class="recent-activities-container">
+        <table id="activityTable" class="display">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>User</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs|default([]) %}
+    <tr>
+        <td>{{ log.createdAt ? log.createdAt|date('Y-m-d H:i') : '-' }}</td>
+        <td>{{ log.user ? (log.user.name ?? log.user.username) : 'System' }}</td>
+        <td>{{ log.action ?: '-' }}</td>
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="3" style="text-align:center;">No recent activities found.</td>
+    </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#activityTable').DataTable({
+        pageLength: 10,
+        lengthChange: false,
+        ordering: true,
+        info: true,
+        searching: true
+    });
+});
+</script>
+{% endblock %}

@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use App\Service\ActivityLogger;
 
 #[Route('/admin')]
 class AdminController extends AbstractController
@@ -30,7 +31,7 @@ class AdminController extends AbstractController
 
     // ─── Add new shoe ────────────────────────────────
     #[Route('/new', name: 'app_admin_new')]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request, EntityManagerInterface $em, ActivityLogger $acitivityLogger): Response
     {
         $shoe = new Shoe();
         $form = $this->createForm(ShoeType::class, $shoe);
@@ -57,6 +58,8 @@ class AdminController extends AbstractController
             $em->persist($shoe);
             $em->flush();
 
+            $acitivityLogger->log('Added new shoe: ' . $shoe->getId());
+
             $this->addFlash('success', 'Shoe added successfully!');
             return $this->redirectToRoute('app_admin_dashboard');
         }
@@ -67,7 +70,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'app_admin_edit')]
-    public function edit(Shoe $shoe, Request $request, EntityManagerInterface $em): Response
+    public function edit(Shoe $shoe, Request $request, EntityManagerInterface $em, ActivityLogger $acitivityLogger): Response
     {
         $form = $this->createForm(ShoeType::class, $shoe);
         $form->handleRequest($request);
@@ -100,6 +103,10 @@ class AdminController extends AbstractController
             }
 
             $em->flush();
+
+            $acitivityLogger->log('Edited A Shoe: ' . $shoe->getId());
+
+
             $this->addFlash('success', 'Shoe updated successfully!');
             return $this->redirectToRoute('app_admin_dashboard');
         }
@@ -112,7 +119,7 @@ class AdminController extends AbstractController
 
     // ─── Delete shoe ────────────────────────────────
     #[Route('/delete/{id}', name: 'app_admin_delete', methods: ['POST'])]
-    public function delete(Shoe $shoe, Request $request, EntityManagerInterface $em): Response
+    public function delete(Shoe $shoe, Request $request, EntityManagerInterface $em, ActivityLogger $acitivityLogger): Response
     {
         if ($this->isCsrfTokenValid('delete' . $shoe->getId(), $request->request->get('_token'))) {
             $orders = $em->getRepository(Order::class)->findBy(['shoe' => $shoe]);
@@ -130,6 +137,9 @@ class AdminController extends AbstractController
 
             $em->remove($shoe);
             $em->flush();
+
+            $acitivityLogger->log('Deleted A Shoe: ' . $shoe->getId());
+
             $this->addFlash('success', 'Shoe deleted successfully!');
         } else {
             $this->addFlash('error', 'Invalid CSRF token.');
@@ -160,10 +170,11 @@ class AdminController extends AbstractController
 
     // ─── Update order status ─────────────────────────
     #[Route('/orders/{id}/status/{status}', name: 'app_admin_orders_update')]
-    public function updateOrderStatus(Order $order, string $status, EntityManagerInterface $em): Response
+    public function updateOrderStatus(Order $order, string $status, EntityManagerInterface $em, ActivityLogger $acitivityLogger): Response
     {
         $order->setStatus($status);
         $em->flush();
+        $acitivityLogger->log('Updated Order Status: ' . $order->getId() . ' to ' . $status);
 
         $this->addFlash('success', 'Order status updated!');
         return $this->redirectToRoute('app_admin_orders');

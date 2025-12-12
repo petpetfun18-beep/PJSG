@@ -162,20 +162,28 @@
   <!-- Logo -->
   <div class="sidebar-logo">
     <img src="{{ asset('images/logo white.png') }}" alt="Logo" class="logo-img">
-    <h1>Admin Panel</h1>
+    <h1>Dashboard Panel</h1>
   </div>
 
-  <a href="{{ path('app_admin_index') }}" class="{% if app.request.get('_route') == 'app_admin_index' %}active{% endif %}">
-    <i class="fas fa-list"></i> Manage Shoes
+  {% if is_granted('ROLE_ADMIN') %}
+  <a href="{{ path('app_dashboard') }}" class="{% if app.request.get('_route') == 'app_dashboard' %}active{% endif %}">
+    <i class="fas fa-boxes"></i> Dashboard
+  </a>  
+
+  <a href="{{ path('app_user_index') }}" class="{% if app.request.get('_route') == 'app_admin_index' %}active{% endif %}">
+    <i class="fas fa-list"></i> Manage Users
   </a>
-  <a href="{{ path('app_admin_new') }}" class="{% if app.request.get('_route') == 'app_admin_new' %}active{% endif %}">
-    <i class="fas fa-plus-circle"></i> Add New Shoe
+
+  <a href="{{ path('app_activity_logs') }}" class="{% if app.request.get('_route') == 'app_activity_logs' %}active{% endif %}">
+    <i class="fas fa-list"></i> Activity Logs
+  </a>
+  {% endif %}
+
+  <a href="{{ path('app_admin_dashboard') }}" class="{% if app.request.get('_route') == 'app_admin_dashboard' %}active{% endif %}">
+    <i class="fas fa-list"></i> Manage Shoes
   </a>
   <a href="{{ path('app_admin_orders') }}" class="{% if app.request.get('_route') == 'app_admin_orders' %}active{% endif %}">
     <i class="fas fa-boxes"></i> Manage Orders
-  </a>
-  <a href="{{ path('app_shop_index') }}">
-    <i class="fas fa-store"></i> View Shop
   </a>
 
   <!-- Logout -->
@@ -256,8 +264,9 @@
               {% endif %}
             </td>
             <td>{{ order.orderDate ? order.orderDate|date('Y-m-d H:i') : '' }}</td>
-            <td class="flex gap-1 flex-wrap justify-center">
-              {% for statusOption in ['Pending','Completed','Cancelled'] %}
+            <td>
+              <div class="flex gap-1 flex-wrap justify-center">
+                {% for statusOption in ['Pending','Completed','Cancelled'] %}
                 {% if order.status != statusOption %}
                   <form method="POST" action="{{ path('app_admin_orders_update', {'id': order.id, 'status': statusOption}) }}">
                     <button type="submit" onclick="return confirm('Are you sure you want to mark this order as {{ statusOption }}?');"
@@ -270,6 +279,7 @@
                   </form>
                 {% endif %}
               {% endfor %}
+              </div>
             </td>
           </tr>
         {% else %}

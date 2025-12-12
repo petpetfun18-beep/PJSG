@@ -1,0 +1,39 @@
+{{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+
+{# Username field #}
+<div>
+    {{ form_label(form.username, 'Username', {'label_attr': {'class': 'block text-sm font-medium text-[#764C29]'}}) }}
+    {{ form_widget(form.username, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#764C29] focus:ring-[#764C29] sm:text-sm'}}) }}
+    {{ form_errors(form.username, {'attr': {'class': 'text-red-600 text-sm mt-1'}}) }}
+</div>
+
+{# Roles field (render each checkbox individually to avoid Array to string conversion) #}
+<div>
+    {{ form_label(form.roles, 'Roles', {'label_attr': {'class': 'block text-sm font-medium text-[#764C29]'}}) }}
+    <div class="mt-2 space-y-2">
+        {% for role in form.roles %}
+            <label class="flex items-center space-x-2">
+                {{ form_widget(role, {'attr': {'class': 'h-4 w-4 text-[#764C29] border-gray-300 rounded focus:ring-[#764C29]'}}) }}
+                <span class="text-sm text-gray-700">{{ role.vars.label }}</span>
+            </label>
+            {{ form_errors(role, {'attr': {'class': 'text-red-600 text-sm mt-1'}}) }}
+        {% endfor %}
+    </div>
+</div>
+
+{# Password field #}
+<div>
+    {{ form_label(form.password, 'Password', {'label_attr': {'class': 'block text-sm font-medium text-[#764C29]'}}) }}
+    {{ form_widget(form.password, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#764C29] focus:ring-[#764C29] sm:text-sm'}}) }}
+    {{ form_errors(form.password, {'attr': {'class': 'text-red-600 text-sm mt-1'}}) }}
+</div>
+
+{# Submit button #}
+<div>
+    <button type="submit"
+        class="w-full bg-[#764C29] hover:bg-[#5f3f22] text-white font-semibold py-2 px-4 rounded-md shadow-sm transition-colors">
+        {{ button_label|default('Save') }}
+    </button>
+</div>
+
+{{ form_end(form) }}

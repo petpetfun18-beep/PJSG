@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% block navbar %}{% endblock %}
 
 {% block title %}Admin - Manage Shoes{% endblock %}
 
@@ -29,7 +30,6 @@
     left: 0;
   }
 
-  /* ✅ Logo Section */
   .sidebar-logo {
     display: flex;
     align-items: center;
@@ -45,7 +45,6 @@
     object-fit: contain;
     border-radius: 20px;
     padding: 5px;
-    /* background-color: #fff; */
   }
 
   .sidebar-logo h1 {
@@ -148,6 +147,22 @@
   .action-delete { background-color: #895129; }
   .action-delete:hover { background-color: #c0392b; }
 
+  /* Add New Shoe Button */
+  .add-shoe-btn {
+    display: inline-block;
+    background-color: #764C29;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 12px;
+    float: right;
+  }
+  .add-shoe-btn:hover {
+    background-color: #5f3f22;
+  }
+
   @media (max-width: 768px) {
     .sidebar {
       width: 100%;
@@ -178,26 +193,34 @@
 
 {% block body %}
 <div class="sidebar">
-  <!-- ✅ Enlarged Logo Section -->
+  <!-- Logo Section -->
   <div class="sidebar-logo">
     <img src="{{ asset('images/logo white.png') }}" alt="Logo" class="logo-img">
-    <h1>Admin Panel</h1>
+    <h1>Dashboard Panel</h1>
   </div>
+
+  {% if is_granted('ROLE_ADMIN') %}
+  <a href="{{ path('app_dashboard') }}" class="{% if app.request.get('_route') == 'app_dashboard' %}active{% endif %}">
+    <i class="fas fa-boxes"></i> Dashboard
+  </a>
+
+   <a href="{{ path('app_user_index') }}" class="{% if app.request.get('_route') == 'app_user_index' %}active{% endif %}">
+    <i class="fas fa-boxes"></i> Manage Users
+  </a>
+
+  <a href="{{ path('app_activity_logs') }}" class="{% if app.request.get('_route') == 'app_activity_logs' %}active{% endif %}">
+    <i class="fas fa-list"></i> Activity Logs
+  </a>
+  {% endif %}
 
   <a href="{{ path('app_admin_dashboard') }}" class="{% if app.request.get('_route') == 'app_admin_dashboard' %}active{% endif %}">
     <i class="fas fa-list"></i> Manage Shoes
   </a>
-  <a href="{{ path('app_admin_new') }}" class="{% if app.request.get('_route') == 'app_admin_new' %}active{% endif %}">
-    <i class="fas fa-plus-circle"></i> Add New Shoe
-  </a>
   <a href="{{ path('app_admin_orders') }}" class="{% if app.request.get('_route') == 'app_admin_orders' %}active{% endif %}">
     <i class="fas fa-boxes"></i> Manage Orders
   </a>
-  <a href="{{ path('app_shop_index') }}">
-    <i class="fas fa-store"></i> View Shop
-  </a>
 
-  <!-- ✅ Secure Logout Form -->
+  <!-- Logout -->
   <form action="{{ path('app_logout') }}" method="post" style="margin-top: auto;">
     <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
     <button type="submit" class="logout-btn">
@@ -208,6 +231,11 @@
 
 <div class="main-content">
   <h1 class="text-3xl font-bold text-[#764C29] mb-6">Manage Shoes</h1>
+
+  <!-- Flex container: Title left (optional), Add button right -->
+  <div class="flex justify-end mb-4">
+    <a href="{{ path('app_admin_new') }}" class="add-shoe-btn"><i class="fas fa-plus-circle"></i> Add New Shoe</a>
+  </div>
 
   <div class="overflow-x-auto rounded-xl bg-white shadow-xl p-6 sm:p-8 rounded-3xl">
     <table id="shoesTable" class="display stripe hover w-full">
@@ -263,6 +291,7 @@
     </table>
   </div>
 </div>
+
 {% endblock %}
 
 {% block javascripts %}

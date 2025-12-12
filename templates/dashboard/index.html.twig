@@ -1,260 +1,276 @@
 {% extends 'base.html.twig' %}
+{% block navbar %}{% endblock %}
 
-{% block title %}PIJAY Shoe Gallery | Welcome{% endblock %}
+{% block title %}Admin Dashboard | PIJAY Shoe Gallery{% endblock %}
 
 {% block stylesheets %}
 {{ parent() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+
 <style>
-  body {
-    background: url("{{ asset('images/brown.png') }}") center/cover no-repeat fixed;
-    background-attachment: fixed;
+body {
     font-family: 'Poppins', sans-serif;
-  }
-
-  .hero {
-    background: rgba(0, 0, 0, 0.55);
-    color: white;
-    text-align: center;
-    padding: 180px 20px;
-    backdrop-filter: blur(3px);
-  }
-
-  .hero h1 {
-    font-size: 3.5rem;
-    margin-bottom: 15px;
-    font-weight: 700;
-  }
-
-  .hero p {
-    font-size: 1.3rem;
-    margin-bottom: 40px;
-    font-weight: 400;
-  }
-
-  .features {
+    margin: 0;
+    min-height: 100vh;
     display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    justify-content: center;
-    margin: 60px 0;
-  }
+    background: #f4f2ef;
+}
 
-  .feature-card {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 30px;
-    border-radius: 20px;
-    text-align: center;
-    flex: 1 1 250px;
-    max-width: 300px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .feature-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 25px rgba(0,0,0,0.15);
-  }
-
-  .feature-card img {
-    width: 80px;
-    margin-bottom: 20px;
-  }
-
-  .feature-card h3 {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-    color: #764C29;
-  }
-
-  .feature-card p {
-    font-size: 1rem;
-    color: #555;
-  }
-
-  .welcome-message {
-    background: rgba(118, 76, 41, 0.85);
+.sidebar {
+    width: 260px;
+    background-color: #764C29;
     color: white;
-    text-align: center;
-    padding: 60px 20px;
-    border-radius: 20px;
-    margin: 40px 0;
-    font-size: 1.2rem;
-  }
-
-  .cta {
-    text-align: center;
-    margin: 50px 0;
-  }
-
-  .cta h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #ffffffff;
-  }
-
-  .cta p {
-    font-size: 1.1rem;
-    color: #f9f7f7ff;
-  }
-
-  /* Admin Modal */
-  .modal {
-    display: none;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
     position: fixed;
-    z-index: 50;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.75);
-    backdrop-filter: blur(4px);
-    justify-content: center;
-    align-items: center;
-    overflow: auto;
-    animation: fadeIn 0.3s ease;
-  }
+    height: 100%;
+    top: 0;
+    left: 0;
+    box-shadow: 2px 0 15px rgba(0,0,0,0.15);
+}
 
-  @keyframes slideDown {
-    0% { transform: translateY(-50px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; } 
-    to { opacity: 1; }
-  }
-
-  .modal-content {
-    background: #fff;
-    padding: 40px 30px;
-    border-radius: 25px;
+.sidebar h2 {
+    font-size: 1.7rem;
+    margin-bottom: 40px;
     text-align: center;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-    animation: slideDown 0.4s ease;
-    position: relative;
-  }
+    font-weight: 600;
+}
 
-  .modal-content h2 {
-    color: #764C29;
-    margin-bottom: 20px;
-  }
-
-  .modal-content input {
-    width: 80%;
+.sidebar a {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    margin-bottom: 14px;
     padding: 12px 15px;
-    margin: 10px 0;
-    border-radius: 12px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-    outline: none;
-    transition: 0.3s;
-  }
+    border-radius: 10px;
+    transition: all 0.25s ease;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
 
-  .modal-content input:focus {
-    border-color: #764C29;
-    box-shadow: 0 4px 15px rgba(118,76,41,0.2);
-  }
+.sidebar a i {
+    margin-right: 12px;
+    font-size: 1.1rem;
+}
 
-  .modal-content button {
+.sidebar a:hover, .sidebar a.active {
+    background-color: #5f3f22;
+    transform: translateX(4px);
+}
+
+.logout-btn {
+    margin-top: auto;
+    background-color: #8a5630;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    text-align: center;
+    transition: background 0.25s ease;
+}
+
+.logout-btn:hover {
+    background-color: #9d6338;
+}
+
+.main-content {
+    margin-left: 280px;
+    flex: 1;
+    padding: 40px 30px;
+}
+
+.welcome-user {
     background: #764C29;
     color: white;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 50px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    margin-top: 10px;
-    transition: 0.3s ease;
-  }
+    padding: 22px;
+    border-radius: 12px;
+    font-size: 1.45rem;
+    margin-bottom: 40px;
+    text-align: center;
+    font-weight: 500;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+}
 
-  .modal-content button:hover {
-    background: #5f3f22;
-  }
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+}
 
-  .close-modal {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 1.5rem;
-    cursor: pointer;
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: all 0.25s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+}
+
+.card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 8px;
     color: #764C29;
-    transition: 0.3s ease;
-  }
+    font-weight: 600;
+}
 
-  .close-modal:hover {
-    color: #5f3f22;
-  }
+.card p a {
+    color: #8a5630;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.card p a:hover {
+    text-decoration: underline;
+}
+
+.recent-activities h2 {
+    color: #764C29;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.recent-activities table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.recent-activities th {
+    background-color: #764C29;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+.recent-activities td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.recent-activities tr:last-child td { border-bottom: none; }
+
+.recent-activities-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 15px;
+    }
+    .sidebar h2 { display: none; }
+    .main-content { margin-left: 0; }
+}
 </style>
 {% endblock %}
 
 {% block body %}
-<section class="hero">
-  <h1>Welcome to PIJAY Shoe Gallery</h1>
-  <p>Your ultimate destination for stylish and comfortable shoes, handcrafted with love.</p>
-</section>
+<div class="sidebar">
+    <img src="{{ asset('images/logo white.png') }}" alt="Logo" class="logo-img">
+    <h2>Admin Panel</h2>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_dashboard') }}" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="{{ path('app_user_index') }}"><i class="fas fa-users"></i> Manage Users</a>
+        <a href="{{ path('app_activity_logs') }}"><i class="fas fa-clipboard-list"></i> Activity Logs</a>
+    {% endif %}
+    <a href="{{ path('app_admin_dashboard') }}"><i class="fas fa-shoe-prints"></i> Manage Shoes</a>
+    <a href="{{ path('app_admin_orders') }}"><i class="fas fa-boxes"></i> Manage Orders</a>
 
-<section class="features">
-  <div class="feature-card">
-    <img src="{{ asset('images/icons/shoes.png') }}" alt="Quality Shoes">
-    <h3>Quality Shoes</h3>
-    <p>Every pair is made with precision and premium materials for unmatched comfort.</p>
-  </div>
-  <div class="feature-card">
-    <img src="{{ asset('images/icons/delivery.png') }}" alt="Fast Delivery">
-    <h3>Fast Delivery</h3>
-    <p>Get your favorite shoes delivered to your doorstep in no time.</p>
-  </div>
-  <div class="feature-card">
-    <img src="{{ asset('images/icons/support.png') }}" alt="Customer Support">
-    <h3>Customer Support</h3>
-    <p>We are always ready to assist you with any inquiries or concerns.</p>
-  </div>
-</section>
-
-<div class="welcome-message">
-  Explore our collection, find your perfect fit, and step into confidence every day.
+    <form action="{{ path('app_logout') }}" method="post" style="margin-top:auto;">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </form>
 </div>
 
-<section class="cta">
-  <h2>Stay Stylish, Stay Confident</h2>
-  <p>Browse our unique designs and enjoy a shopping experience tailored just for you.</p>
-</section>
+<div class="main-content">
+    {% if app.user %}
+        <div class="welcome-user">
+            Welcome back, {{ app.user.name ?? app.user.username }}!
+        </div>
+    {% endif %}
 
-{# Admin Login Modal #}
-<div id="adminModal" class="modal">
-  <div class="modal-content">
-    <span class="close-modal" id="closeModal">&times;</span>
-    <h2>Admin Login</h2>
-    <input type="text" id="adminUser" placeholder="Username">
-    <input type="password" id="adminPass" placeholder="Password">
-    <br>
-    <button id="loginBtn">Login</button>
-  </div>
+    <div class="cards">
+        <div class="card">
+            <h3>Manage Shoes</h3>
+            <p><a href="{{ path('app_admin_dashboard') }}">View / Manage Shoes</a></p>
+        </div>
+
+        {% if is_granted('ROLE_ADMIN') %}
+        <div class="card">
+            <h3>Manage Users</h3>
+            <p><a href="{{ path('app_user_index') }}">View / Manage Users</a></p>
+        </div>
+        {% endif %}
+
+        <div class="card">
+            <h3>Manage Orders</h3>
+            <p><a href="{{ path('app_admin_orders') }}">View / Manage Orders</a></p>
+        </div>
+    </div>
+
+    {% if is_granted('ROLE_ADMIN') %}
+    <div class="recent-activities" style="margin-top: 50px;">
+        <h2>Recent Activities</h2>
+        <div class="recent-activities-container">
+            <table id="activityTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in activityLogs %}
+                        <tr>
+                            <td>{{ log.createdAt|date('Y-m-d H:i') }}</td>
+                            <td>{{ log.action }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="2" style="text-align:center;">No recent activities found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
 
 {% block javascripts %}
 {{ parent() }}
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 <script>
-  const modal = document.getElementById('adminModal');
-  const btn = document.getElementById('navbarManageBtn'); // navbar button id
-  const closeBtn = document.getElementById('closeModal');
-  const loginBtn = document.getElementById('loginBtn');
-
-  btn.onclick = () => modal.style.display = 'flex';
-  closeBtn.onclick = () => modal.style.display = 'none';
-  window.onclick = (e) => { if(e.target == modal) modal.style.display = 'none'; };
-
-  loginBtn.onclick = () => {
-    const user = document.getElementById('adminUser').value;
-    const pass = document.getElementById('adminPass').value;
-
-    if(user === 'admin' && pass === 'admin123') {
-      window.location.href = "{{ path('app_admin_dashboard') }}";
-    } else {
-      alert('Invalid username or password!');
-    }
-  }
+$(document).ready(function() {
+    $('#activityTable').DataTable({
+        pageLength: 7,
+        lengthChange: false,
+        ordering: true,
+        info: false,
+        searching: false
+    });
+});
 </script>
 {% endblock %}

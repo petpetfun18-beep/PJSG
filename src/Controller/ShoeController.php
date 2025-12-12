@@ -10,12 +10,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use App\Service\ActivityLogger;
 
-#[Route('/admin/shoe', name: 'app_admin_shoe_')]
+#[Route('/admin/shoe', name: 'app_admin_shoe')]
 class ShoeController extends AbstractController
 {
     #[Route('/new', name: 'new')]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request, EntityManagerInterface $em, ActivityLogger $acitivityLogger): Response
     {
         $shoe = new Shoe();
         $form = $this->createForm(ShoeType::class, $shoe);
@@ -45,6 +46,8 @@ class ShoeController extends AbstractController
             // ✅ Category is automatically handled by EntityType — no need to convert
             $em->persist($shoe);
             $em->flush();
+
+            $acitivityLogger->log('Added new shoe: ' . $shoe->getId());
 
             $this->addFlash('success', 'Shoe added successfully!');
             return $this->redirectToRoute('app_admin_dashboard');

@@ -1,0 +1,188 @@
+{% extends 'base.html.twig' %}
+{% block navbar %}{% endblock %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+  body {
+    background: url("{{ asset('images/brown.png') }}") center/cover no-repeat fixed;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* Sidebar Styles */
+  .sidebar {
+    width: 270px;
+    background-color: #764C29;
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+
+  .sidebar-logo .logo-img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 20px;
+    padding: 5px;
+  }
+
+  .sidebar-logo h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+  }
+
+  .sidebar a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 10px;
+    transition: background 0.3s;
+  }
+
+  .sidebar a i {
+    margin-right: 10px;
+  }
+
+  .sidebar a:hover,
+  .sidebar a.active {
+    background-color: #5f3f22;
+  }
+
+  /* Logout Button */
+  .logout-btn {
+    margin-top: auto;
+    background-color: #895129;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    transition: background-color 0.3s;
+  }
+
+  .logout-btn:hover {
+    background-color: #a55d2f;
+  }
+
+  /* Main Content */
+  .main-content {
+    margin-left: 290px;
+    flex: 1;
+    padding: 40px 30px;
+  }
+
+  .form-container {
+    background: rgba(255,255,255,0.95);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+
+  .action-link {
+    margin-right: 10px;
+    color: #764C29;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .action-link:hover { text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+      flex-direction: row;
+      justify-content: space-around;
+      padding: 15px;
+    }
+
+    .sidebar-logo {
+      flex-direction: row;
+      justify-content: center;
+      margin-bottom: 0;
+    }
+
+    .sidebar-logo h1 {
+      display: none;
+    }
+
+    .main-content {
+      margin-left: 0;
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="sidebar">
+  <!-- Logo Section -->
+  <div class="sidebar-logo">
+    <img src="{{ asset('images/logo white.png') }}" alt="Logo" class="logo-img">
+    <h1>Admin Panel</h1>
+  </div>
+
+  <a href="{{ path('app_user_index') }}" class="{% if app.request.get('_route') == 'app_user_index' %}active{% endif %}">
+    <i class="fas fa-users"></i> Manage Users
+  </a>
+
+  <a href="{{ path('app_admin_dashboard') }}" class="{% if app.request.get('_route') == 'app_admin_dashboard' %}active{% endif %}">
+    <i class="fas fa-list"></i> Manage Shoes
+  </a>
+
+  <a href="{{ path('app_admin_orders') }}" class="{% if app.request.get('_route') == 'app_admin_orders' %}active{% endif %}">
+    <i class="fas fa-boxes"></i> Manage Orders
+  </a>
+
+  <!-- Logout -->
+  <form action="{{ path('app_logout') }}" method="post" style="margin-top: auto;">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+    <button type="submit" class="logout-btn">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </form>
+</div>
+
+<div class="main-content">
+  <h1 class="text-3xl font-bold text-[#764C29] mb-6">Edit User</h1>
+
+  <div class="form-container">
+    {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+  </div>
+
+  <div class="mt-4">
+    <a href="{{ path('app_user_index') }}" class="action-link">Back to list</a>
+    {{ include('user/_delete_form.html.twig') }}
+  </div>
+</div>
+{% endblock %}

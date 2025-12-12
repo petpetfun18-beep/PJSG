@@ -1,31 +1,152 @@
 {% extends 'base.html.twig' %}
 
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
 {% block title %}Sign in{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<style>
+body {
+    background: url("{{ asset('images/brown.png') }}") center/cover no-repeat fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Centered login card */
+.login-card {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 50px 40px;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 450px; /* Increased width */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: scale(1.05); /* slightly bigger */
+}
+
+/* Logo */
+.login-card img {
+    width: 140px; /* bigger */
+    height: 140px;
+    object-fit: contain;
+    margin-bottom: 25px;
+    border-radius: 20px;
+}
+
+/* Header */
+.login-card h1 {
+    font-size: 2.2rem; /* bigger */
+    color: #764C29;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Labels & inputs */
+.login-card label {
+    display: block;
+    text-align: left;
+    margin-bottom: 6px;
+    font-weight: 600;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.login-card input[type="text"],
+.login-card input[type="password"] {
+    width: 100%;
+    padding: 14px 18px; /* bigger input */
+    margin-bottom: 25px;
+    border-radius: 12px;
+    border: 2px solid #E0E0E0;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.login-card input[type="text"]:focus,
+.login-card input[type="password"]:focus {
+    border-color: #764C29;
+    box-shadow: 0 6px 15px rgba(118, 76, 41, 0.3);
+    outline: none;
+}
+
+/* Remember me checkbox */
+.login-card .remember-me {
+    text-align: left;
+    margin-bottom: 25px;
+    width: 100%;
+    font-size: 0.95rem;
+}
+
+/* Submit button */
+.login-card button {
+    width: 100%;
+    padding: 14px 0;
+    background-color: #764C29;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.login-card button:hover {
+    background-color: #5f3f22;
+}
+
+/* Alert messages */
+.alert {
+    background-color: #ffe0e0;
+    color: #b00000;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: left;
+    width: 100%;
+    font-size: 0.95rem;
+}
+</style>
+{% endblock %}
+
 {% block body %}
-<form method="post" action="{{ path('app_login') }}">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+<div class="login-card">
+    <!-- Logo -->
+    <img src="{{ asset('images/logo white.png') }}" alt="Logo">
 
-    {% if app.user %}
-        <div class="mb-3">You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a></div>
-    {% endif %}
+    <h1>Sign in</h1>
 
-    <h1>Please sign in</h1>
+    <form method="post" action="{{ path('app_login') }}">
+        {% if error %}
+            <div class="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
 
-    <label for="inputUsername">Username</label>
-    <input type="text" name="_username" id="inputUsername" value="{{ last_username }}" autocomplete="username" required autofocus>
+        {% if app.user %}
+            <div class="mb-3">You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a></div>
+        {% endif %}
 
-    <label for="inputPassword">Password</label>
-    <input type="password" name="_password" id="inputPassword" autocomplete="current-password" required>
+        <label for="inputUsername">Username</label>
+        <input type="text" name="_username" id="inputUsername" value="{{ last_username }}" autocomplete="username" required autofocus>
 
-    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <label for="inputPassword">Password</label>
+        <input type="password" name="_password" id="inputPassword" autocomplete="current-password" required>
 
-    <div>
-        <label><input type="checkbox" name="_remember_me"> Remember me</label>
-    </div>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-    <button type="submit">Sign in</button>
-</form>
+        <div class="remember-me">
+            <label><input type="checkbox" name="_remember_me"> Remember me</label>
+        </div>
+
+        <button type="submit">Sign in</button>
+    </form>
+</div>
 {% endblock %}

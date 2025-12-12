@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}PIJAY Shoe Gallery{% endblock %}</title>
 
-  <!-- ✅ Website Icon -->
+  <!-- Website Icon -->
   <link rel="icon" type="image/png" href="{{ asset('images/logo white.png') }}">
 
   <!-- TailwindCSS -->
@@ -19,7 +19,6 @@
   {% endblock %}
 
   <style>
-    /* ✨ Custom navbar hover animation */
     .nav-link {
       position: relative;
       display: inline-block;
@@ -94,9 +93,12 @@
 
 <body class="bg-[#F2F2F2] font-sans flex flex-col min-h-screen">
 
-  <!-- ✅ Hide Header if on Admin Page -->
+  <!-- Header -->
+  {% block navbar %}
   {% if not (app.request.get('_route') starts with 'app_admin') %}
   <header class="flex justify-between items-center bg-[#764C29] text-white px-10 py-2 shadow-md">
+
+    <!-- Logo -->
     <div class="flex items-center space-x-3">
       <a href="{{ path('app_dashboard') }}">
         <img src="{{ asset('images/logo white.png') }}" 
@@ -108,54 +110,42 @@
       </h1>
     </div>
 
+    <!-- Navigation -->
     <nav class="flex space-x-6 text-base font-medium items-center">
+      <a href="{{ path('app_dashboard') }}" class="nav-link">Home</a>
+      <a href="{{ path('app_shop_index') }}" class="nav-link">Shop</a>
+      <a href="{{ path('app_about') }}" class="nav-link">About</a>
+      <a href="{{ path('app_contact') }}" class="nav-link">Contact</a>
 
-  <a href="{{ path('app_dashboard') }}" class="nav-link">Home</a>
-  <a href="{{ path('app_shop_index') }}" class="nav-link">Shop</a>
-  <a href="{{ path('app_about') }}" class="nav-link">About</a>
-  <a href="{{ path('app_contact') }}" class="nav-link">Contact</a>
-
-  {% if app.user %}
-    <span class="text-sm opacity-80">
-      Hi, {{ app.user.name ?? app.user.username }}
-    </span>
-
-    {% if is_granted('ROLE_ADMIN') %}
-      <a href="{{ path('app_admin_dashboard') }}"
-         class="manage-btn bg-white text-[#764C29] px-3 py-1 rounded-md font-semibold hover:bg-[#F2F2F2] transition">
-        Admin Panel
-      </a>
-    {% endif %}
-
-    {% if is_granted('ROLE_STAFF') %}
-      <a href="{{ path('app_staff_dashboard') }}"
-         class="manage-btn bg-white text-[#764C29] px-3 py-1 rounded-md font-semibold hover:bg-[#F2F2F2] transition">
-        Staff Panel
-      </a>
-    {% endif %}
-
-    <a href="{{ path('app_logout') }}"
-       class="text-white border border-white px-3 py-1 rounded hover:bg-white hover:text-[#764C29] transition">
-      Logout
-    </a>
-
-  {% else %}
-    <a href="{{ path('app_login') }}"
-       class="manage-btn bg-white text-[#764C29] px-3 py-1 rounded-md font-semibold hover:bg-[#F2F2F2] transition">
-      Login
-    </a>
-  {% endif %}
-</nav>
-
+      {% if app.user %}
+        {% if is_granted('ROLE_ADMIN') %}
+          <a href="{{ path('app_admin_dashboard') }}"
+             class="manage-btn bg-white text-[#764C29] px-3 py-1 rounded-md font-semibold hover:bg-[#F2F2F2] transition">
+            Admin Panel
+          </a>
+        {% endif %}
+        <a href="{{ path('app_logout') }}"
+           class="text-white border border-white px-3 py-1 rounded hover:bg-white hover:text-[#764C29] transition">
+          Logout
+        </a>
+      {% else %}
+        <a href="{{ path('app_login') }}"
+           class="manage-btn bg-white text-[#764C29] px-3 py-1 rounded-md font-semibold hover:bg-[#F2F2F2] transition">
+          Login
+        </a>
+      {% endif %}
+    </nav>
   </header>
   {% endif %}
+  {% endblock %}
 
   <!-- MAIN CONTENT -->
   <main class="flex-grow">
     {% block body %}{% endblock %}
   </main>
 
-  <!-- ✅ Hide Footer if on Admin Page -->
+  <!-- Footer -->
+  {% block footer %}
   {% if not (app.request.get('_route') starts with 'app_admin') %}
   <footer class="bg-[#764C29] text-white text-center py-4 mt-10 shadow-inner">
     <p class="text-sm">
@@ -163,8 +153,8 @@
     </p>
   </footer>
   {% endif %}
-
-  {% block javascripts %}
   {% endblock %}
+
+  {% block javascripts %}{% endblock %}
 </body>
 </html>

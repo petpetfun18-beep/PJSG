@@ -1,0 +1,154 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PIJAY Shoe Gallery | Welcome{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+  body {
+    background: url("{{ asset('images/brown.png') }}") center/cover no-repeat fixed;
+    background-attachment: fixed;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .hero {
+    background: rgba(0, 0, 0, 0.55);
+    color: white;
+    text-align: center;
+    padding: 180px 20px;
+    backdrop-filter: blur(3px);
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+    font-weight: 700;
+  }
+
+  .hero p {
+    font-size: 1.3rem;
+    margin-bottom: 40px;
+    font-weight: 400;
+  }
+
+  .features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    margin: 60px 0;
+  }
+
+  .feature-card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    flex: 1 1 250px;
+    max-width: 300px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+  }
+
+  .feature-card img {
+    width: 80px;
+    margin-bottom: 20px;
+  }
+
+  .feature-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: #764C29;
+  }
+
+  .feature-card p {
+    font-size: 1rem;
+    color: #555;
+  }
+
+  .feature-card-link {
+    text-decoration: none;
+    display: block;
+  }
+
+  .welcome-message {
+    background: rgba(118, 76, 41, 0.85);
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+    border-radius: 20px;
+    margin: 40px 0;
+    font-size: 1.2rem;
+  }
+
+  .cta {
+    text-align: center;
+    margin: 50px 0;
+  }
+
+  .cta h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #ffffffff;
+  }
+
+  .cta p {
+    font-size: 1.1rem;
+    color: #f9f7f7ff;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<section class="hero">
+  <h1>Welcome to PIJAY Shoe Gallery</h1>
+  <p>Your ultimate destination for stylish and comfortable shoes, handcrafted with love.</p>
+  {% if app.user %}
+    <div class="welcome-user bg-white text-[#764C29] px-6 py-4 rounded-xl shadow-lg font-bold text-2xl text-center mt-8 max-w-md mx-auto animate-pulse">
+      Welcome back, {{ app.user.name ?? app.user.username }}! 🎉
+    </div>
+  {% endif %}
+</section>
+
+<section class="features">
+  <a href="{{ path('app_shop_index') }}" class="feature-card-link">
+    <div class="feature-card">
+      <img src="{{ asset('images/icons/shoes.png') }}" alt="Quality Shoes">
+      <h3>Quality Shoes</h3>
+      <p>Every pair is made with precision and premium materials for unmatched comfort.</p>
+    </div>
+  </a>
+  <a href="{{ path('app_contact') }}" class="feature-card-link">
+    <div class="feature-card">
+      <img src="{{ asset('images/icons/delivery.png') }}" alt="Fast Delivery">
+      <h3>Fast Delivery</h3>
+      <p>Get your favorite shoes delivered to your doorstep in no time.</p>
+    </div>
+  </a>
+  <a href="{{ path('app_contact') }}" class="feature-card-link">
+    <div class="feature-card">
+      <img src="{{ asset('images/icons/support.png') }}" alt="Customer Support">
+      <h3>Customer Support</h3>
+      <p>We are always ready to assist you with any inquiries or concerns.</p>
+    </div>
+  </a>
+</section>
+
+<div class="welcome-message">
+  Explore our collection, find your perfect fit, and step into confidence every day.
+</div>
+
+<section class="cta">
+  <h2>Stay Stylish, Stay Confident</h2>
+  <p>Browse our unique designs and enjoy a shopping experience tailored just for you.</p>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+{% endblock %}

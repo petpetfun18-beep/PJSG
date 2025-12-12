@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 
-class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
+class LoginAuthenticator extends AbstractLoginFormAuthenticator
 {
     public const LOGIN_ROUTE = 'app_login';
 
@@ -28,10 +28,14 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        $username = (string) $request->request->get('_username', '');
+        $username = trim((string) $request->request->get('_username', ''));
         $password = (string) $request->request->get('_password', '');
 
-        $request->getSession()->set(Security::LAST_USERNAME, $username);
+        if ($username === 'NULL' || $username === '') {
+            $username = '';
+        }
+
+        $request->getSession()->set('_security.last_username', $username);
 
         return new Passport(
             new UserBadge($username),
@@ -48,6 +52,11 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $targetPath = $request->getSession()->get('_security.' . $firewallName . '.target_path');
         if ($targetPath) {
             return new RedirectResponse($targetPath);
+        }
+
+        $user = $token->getUser();
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            return new RedirectResponse($this->urlGenerator->generate('app_admin_dashboard'));
         }
 
         return new RedirectResponse($this->urlGenerator->generate('app_dashboard'));
